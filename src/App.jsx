@@ -5,7 +5,7 @@ import LoginHook from "./pages/LoginHook";
 function App() {
   return (
     <>
-      <LoginFormikPage />
+      <HomePage />
     </>
   );
 }
