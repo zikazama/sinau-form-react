@@ -2,41 +2,57 @@ import { useEffect, useRef, useState } from "react";
 import Card from "../components/Card";
 import CardClass from "../components/CardClass";
 import Jumbotron from "./Jumbotron";
+import { useContext } from "react";
+import ThemeContext from "../contexts/ThemeContext";
+import { useReducer } from "react";
+import todoReducer from "../reducers/TodoReducer";
 
 const ContentHomeLayout = () => {
+  const initialTodos = [
+    "Todo 1",
+    "Todo 2",
+  ];
+
   const inputTodo = useRef();
 
-  const [todo, setTodo] = useState([]);
+  const { theme, setTheme } = useContext(ThemeContext);
+
+  const toggleTheme = () => {
+    setTheme((prevTheme) => (prevTheme === "dark" ? "light" : "dark"));
+  };
+
+  const [todo, dispatch] = useReducer(todoReducer, initialTodos);
   const [onUpdate, setOnUpdate] = useState(null);
 
   const fetchTodo = () => {
     fetch("https://jsonplaceholder.typicode.com/todos")
       .then((response) => response.json())
       .then((json) => {
-        const titles = json.map((item) => item.title)
+        const titles = json.map((item) => item.title);
         setTodo(titles);
       });
   };
 
-  useEffect(() => {
-    fetchTodo();
-  }, []);
+  // useEffect(() => {
+  //   fetchTodo();
+  // }, []);
 
   const addTodo = () => {
     if (onUpdate !== null) {
       const todo = inputTodo.current.value;
       inputTodo.current.value = "";
-      setTodo((dataBefore) => {
-        dataBefore[onUpdate] = todo;
-        return [...dataBefore];
-      });
+      // setTodo((dataBefore) => {
+      //   dataBefore[onUpdate] = todo;
+      //   return [...dataBefore];
+      // });
       setOnUpdate(null);
     } else {
       const todo = inputTodo.current.value;
       inputTodo.current.value = "";
-      setTodo((dataBefore) => {
-        return [...dataBefore, todo];
-      });
+      dispatch({ type: "ADD", index: onUpdate, todo });
+      // setTodo((dataBefore) => {
+      //   return [...dataBefore, todo];
+      // });
     }
   };
 
@@ -53,8 +69,16 @@ const ContentHomeLayout = () => {
   };
 
   return (
-    <div className="content-home-layout" style={{ padding: "20px" }}>
+    <div
+      className="content-home-layout"
+      style={{
+        padding: "20px",
+        backgroundColor: theme === "dark" ? "black" : "white",
+        color: theme === "dark" ? "white" : "black",
+      }}
+    >
       {/* <Jumbotron /> */}
+      <button onClick={toggleTheme}>Ganti Tema</button>
       <div
         style={{
           width: "600px",

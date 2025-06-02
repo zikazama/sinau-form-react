@@ -1,11 +1,13 @@
+import ThemeContext from "./contexts/ThemeContext";
 import HomePage from "./pages/Home";
-import LoginPageControlled from "./pages/LoginControlled";
-import LoginFormikPage from "./pages/LoginFormik";
-import LoginHook from "./pages/LoginHook";
+import React, { useState } from "react";
 function App() {
+  const [theme, setTheme] = useState("dark");
   return (
     <>
+    <ThemeContext.Provider value={{ theme, setTheme }}>
       <HomePage />
+    </ThemeContext.Provider>
     </>
   );
 }
